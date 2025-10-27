@@ -70,8 +70,8 @@ const styles = StyleSheet.create({
     paddingBottom: 25,
   },
   logo: {
-    width: 240,
-    height: 168,
+    width: 280,
+    height: 196,
   },
   body: {
     flex: 1,
@@ -80,7 +80,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   title: {
-    marginTop: 6,
+    marginTop: -20,
     fontSize: 24,
     lineHeight: 30,
     fontWeight: "800" as const,
