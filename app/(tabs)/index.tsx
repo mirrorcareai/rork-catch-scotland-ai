@@ -64,20 +64,20 @@ const styles = StyleSheet.create({
   topWhite: {
     backgroundColor: "#fff",
     alignItems: "center",
-    justifyContent: "flex-end",
+    justifyContent: "center",
+    paddingBottom: 40,
   },
   logo: {
     width: "70%",
     maxWidth: 360,
     height: Platform.select({ web: 220, default: 200 }) as number,
-    marginTop: 12,
-    marginBottom: 8,
   },
   body: {
     flex: 1,
     backgroundColor: DARK_TEAL,
     alignItems: "center",
     justifyContent: "center",
+    paddingTop: 80,
     paddingBottom: 60,
   },
   title: {
