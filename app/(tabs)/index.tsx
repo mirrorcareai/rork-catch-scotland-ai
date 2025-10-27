@@ -67,7 +67,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   logoContainer: {
-    paddingBottom: 15,
+    paddingBottom: 5,
   },
   logo: {
     width: 340,
@@ -80,7 +80,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   title: {
-    marginTop: -170,
+    marginTop: -190,
     fontSize: 24,
     lineHeight: 30,
     fontWeight: "800" as const,
