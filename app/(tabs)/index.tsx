@@ -70,8 +70,8 @@ const styles = StyleSheet.create({
     paddingBottom: 25,
   },
   logo: {
-    width: 280,
-    height: 196,
+    width: 340,
+    height: 238,
   },
   body: {
     flex: 1,
