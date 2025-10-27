@@ -39,7 +39,7 @@ export default function HomeLoginScreen() {
         />
       </View>
 
-      <View style={styles.body}>
+      <View style={[styles.body, { paddingBottom: insets.bottom }]}>
         <Text style={styles.title} testID="home-title">Catch Scotland{"\n"}Staff Portal</Text>
 
         <Animated.View style={pressStyle}>
@@ -62,23 +62,21 @@ export default function HomeLoginScreen() {
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: DARK_TEAL },
   topWhite: {
+    flex: 1,
     backgroundColor: "#fff",
     alignItems: "center",
     justifyContent: "center",
-    paddingBottom: 40,
   },
   logo: {
-    width: "70%",
-    maxWidth: 360,
-    height: Platform.select({ web: 220, default: 200 }) as number,
+    width: "60%",
+    maxWidth: 300,
+    height: Platform.select({ web: 180, default: 160 }) as number,
   },
   body: {
     flex: 1,
     backgroundColor: DARK_TEAL,
     alignItems: "center",
     justifyContent: "center",
-    paddingTop: 80,
-    paddingBottom: 60,
   },
   title: {
     marginTop: 6,
