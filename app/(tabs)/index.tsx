@@ -2,7 +2,7 @@ import React, { useMemo, useRef } from "react";
 import { Animated, Image, Platform, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { useRouter } from "expo-router";
 
-const LOGO_URI = "https://pub-e001eb4506b145aa938b5d3badbff6a5.r2.dev/attachments/xiy0a0v9z8jkne3s4gwdx" as const;
+const LOGO_URI = "https://pub-e001eb4506b145aa938b5d3badbff6a5.r2.dev/attachments/86vz17l8sg0iaq4aq58ks" as const;
 
 // Match chatbot background from Typebot theme: #abd9d6
 const CHAT_BG = "#abd9d6" as const;

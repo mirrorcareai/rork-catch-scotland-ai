@@ -6,7 +6,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { ArrowLeft, ExternalLink, RefreshCcw } from "lucide-react-native";
 
 const CHAT_URL = "https://typebot.co/catch-scotland-v2-1-2blwkou" as const;
-const LOGO_URI = "https://pub-e001eb4506b145aa938b5d3badbff6a5.r2.dev/attachments/xiy0a0v9z8jkne3s4gwdx" as const;
+const LOGO_URI = "https://pub-e001eb4506b145aa938b5d3badbff6a5.r2.dev/attachments/86vz17l8sg0iaq4aq58ks" as const;
 
 function HeaderActions({ onOpenExternal, onReload, onBack }: { onOpenExternal: () => void; onReload: () => void; onBack: () => void }) {
   return (
