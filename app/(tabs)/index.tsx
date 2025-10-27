@@ -1,5 +1,5 @@
 import React, { useMemo, useRef } from "react";
-import { Animated, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Animated, Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { useRouter } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
@@ -28,7 +28,15 @@ export default function HomeLoginScreen() {
 
   return (
     <View style={styles.container} testID="home-container">
-      <View style={[styles.topWhite, { paddingTop: insets.top }]} testID="home-hero" />
+      <View style={[styles.topWhite, { paddingTop: insets.top }]} testID="home-hero">
+        <View style={styles.logoContainer}>
+          <Image
+            source={{ uri: "https://pub-e001eb4506b145aa938b5d3badbff6a5.r2.dev/attachments/75kfqijjrb5wz5fkoeeel" }}
+            style={styles.logo}
+            resizeMode="contain"
+          />
+        </View>
+      </View>
 
       <View style={[styles.body, { paddingBottom: insets.bottom }]}>
         <Text style={styles.title} testID="home-title">Catch Scotland{"\n"}Staff Portal</Text>
@@ -55,6 +63,15 @@ const styles = StyleSheet.create({
   topWhite: {
     flex: 1,
     backgroundColor: "#fff",
+    justifyContent: "flex-end",
+    alignItems: "center",
+  },
+  logoContainer: {
+    paddingBottom: 40,
+  },
+  logo: {
+    width: 200,
+    height: 140,
   },
   body: {
     flex: 1,
