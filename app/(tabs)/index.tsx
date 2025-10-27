@@ -77,7 +77,8 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: DARK_TEAL,
     alignItems: "center",
-    paddingTop: 16,
+    justifyContent: "center",
+    paddingBottom: 60,
   },
   title: {
     marginTop: 6,
