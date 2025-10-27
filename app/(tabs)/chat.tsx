@@ -196,6 +196,6 @@ const styles = StyleSheet.create({
   openBtnText: { color: "#fff", fontWeight: "700" as const },
   openingOverlay: { position: "absolute", top: 12, right: 12 },
   iframeWrap: { flex: 1 },
-  iframe: { width: "100%", height: "100%", border: "0" } as const,
+  iframe: { width: "100%", height: "100%", border: 0 } as const,
   fabRow: { position: "absolute", right: 12, bottom: 20, flexDirection: "row", gap: 10 },
 });
