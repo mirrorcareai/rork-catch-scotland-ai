@@ -67,11 +67,11 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   logoContainer: {
-    paddingBottom: 40,
+    paddingBottom: 25,
   },
   logo: {
-    width: 200,
-    height: 140,
+    width: 240,
+    height: 168,
   },
   body: {
     flex: 1,
