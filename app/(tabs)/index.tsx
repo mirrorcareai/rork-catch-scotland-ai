@@ -1,15 +1,17 @@
 import React, { useMemo, useRef } from "react";
 import { Animated, Image, Platform, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { useRouter } from "expo-router";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 const LOGO_URI = "https://pub-e001eb4506b145aa938b5d3badbff6a5.r2.dev/attachments/86vz17l8sg0iaq4aq58ks" as const;
 
-// Match chatbot background from Typebot theme: #abd9d6
-const CHAT_BG = "#abd9d6" as const;
-const ACCENT = "#436f78" as const;
+// New palette to match the provided mock
+const DARK_TEAL = "#3f6b71" as const; // main background for body
+const MINT = "#cfeae5" as const; // button background
 
 export default function HomeLoginScreen() {
   const router = useRouter();
+  const insets = useSafeAreaInsets();
   const scale = useRef(new Animated.Value(1)).current;
 
   const onPressIn = () => {
@@ -28,16 +30,17 @@ export default function HomeLoginScreen() {
 
   return (
     <View style={styles.container} testID="home-container">
-      <View style={styles.centerWrap}>
+      <View style={[styles.topWhite, { paddingTop: insets.top }]} testID="home-hero">
         <Image
           source={{ uri: LOGO_URI }}
           style={styles.logo}
           resizeMode="contain"
           accessibilityLabel="Catch Scotland logo"
         />
+      </View>
 
-        <Text style={styles.title} testID="home-title">Catch Scotland</Text>
-        <Text style={styles.subtitle} testID="home-subtitle">Staff AI Portal - Demo</Text>
+      <View style={styles.body}>
+        <Text style={styles.title} testID="home-title">Catch Scotland{"\n"}Staff Portal</Text>
 
         <Animated.View style={pressStyle}>
           <TouchableOpacity
@@ -52,32 +55,46 @@ export default function HomeLoginScreen() {
           </TouchableOpacity>
         </Animated.View>
       </View>
-
-      <View style={styles.bottomInset} />
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: CHAT_BG },
-  centerWrap: { flex: 1, alignItems: "center", justifyContent: "center", paddingHorizontal: 24 },
-  logo: { width: "70%", maxWidth: 340, height: Platform.select({ web: 200, default: 180 }) as number },
-  title: { marginTop: 8, fontSize: 40, lineHeight: 48, fontWeight: "800" as const, color: "#15373c" },
-  subtitle: { marginTop: 6, fontSize: 16, color: "#1e4d55" },
-  loginBtn: {
-    marginTop: 28,
-    paddingVertical: 14,
-    paddingHorizontal: 36,
-    borderRadius: 12,
+  container: { flex: 1, backgroundColor: DARK_TEAL },
+  topWhite: {
     backgroundColor: "#fff",
-    borderWidth: 1,
-    borderColor: ACCENT,
-    shadowColor: "#000",
-    shadowOpacity: 0.1,
-    shadowOffset: { width: 0, height: 2 },
-    shadowRadius: 6,
-    elevation: 2,
+    alignItems: "center",
+    justifyContent: "flex-end",
   },
-  loginText: { color: ACCENT, letterSpacing: 2, fontWeight: "800" as const },
-  bottomInset: { height: 32 },
+  logo: {
+    width: "70%",
+    maxWidth: 360,
+    height: Platform.select({ web: 180, default: 160 }) as number,
+    marginTop: 18,
+    marginBottom: 12,
+  },
+  body: {
+    flex: 1,
+    backgroundColor: DARK_TEAL,
+    alignItems: "center",
+    paddingTop: 12,
+  },
+  title: {
+    marginTop: 6,
+    fontSize: 24,
+    lineHeight: 30,
+    fontWeight: "800" as const,
+    color: "#ffffff",
+    textAlign: "center",
+  },
+  loginBtn: {
+    marginTop: 16,
+    paddingVertical: 10,
+    paddingHorizontal: 36,
+    borderRadius: 6,
+    backgroundColor: MINT,
+    borderWidth: 1,
+    borderColor: "#111",
+  },
+  loginText: { color: "#111", letterSpacing: 1, fontWeight: "800" as const },
 });
