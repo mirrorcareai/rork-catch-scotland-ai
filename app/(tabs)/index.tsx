@@ -1,9 +1,7 @@
 import React, { useMemo, useRef } from "react";
-import { Animated, Image, Platform, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Animated, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { useRouter } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-
-const LOGO_URI = "https://pub-e001eb4506b145aa938b5d3badbff6a5.r2.dev/attachments/1jted3w11djg8r5b9t2fn" as const;
 
 // New palette to match the provided mock
 const DARK_TEAL = "#3f6b71" as const; // main background for body
@@ -30,14 +28,7 @@ export default function HomeLoginScreen() {
 
   return (
     <View style={styles.container} testID="home-container">
-      <View style={[styles.topWhite, { paddingTop: insets.top }]} testID="home-hero">
-        <Image
-          source={{ uri: LOGO_URI }}
-          style={styles.logo}
-          resizeMode="contain"
-          accessibilityLabel="Catch Scotland logo"
-        />
-      </View>
+      <View style={[styles.topWhite, { paddingTop: insets.top }]} testID="home-hero" />
 
       <View style={[styles.body, { paddingBottom: insets.bottom }]}>
         <Text style={styles.title} testID="home-title">Catch Scotland{"\n"}Staff Portal</Text>
@@ -64,13 +55,6 @@ const styles = StyleSheet.create({
   topWhite: {
     flex: 1,
     backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  logo: {
-    width: "60%",
-    maxWidth: 300,
-    height: Platform.select({ web: 180, default: 160 }) as number,
   },
   body: {
     flex: 1,
