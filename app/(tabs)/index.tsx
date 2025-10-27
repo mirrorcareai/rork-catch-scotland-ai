@@ -80,7 +80,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   title: {
-    marginTop: -20,
+    marginTop: -60,
     fontSize: 24,
     lineHeight: 30,
     fontWeight: "800" as const,
@@ -88,7 +88,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   loginBtn: {
-    marginTop: 20,
+    marginTop: 16,
     paddingVertical: 10,
     paddingHorizontal: 36,
     borderRadius: 6,
