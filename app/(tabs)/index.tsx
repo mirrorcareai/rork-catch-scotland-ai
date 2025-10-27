@@ -3,7 +3,7 @@ import { Animated, Image, Platform, StyleSheet, Text, TouchableOpacity, View } f
 import { useRouter } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-const LOGO_URI = "https://pub-e001eb4506b145aa938b5d3badbff6a5.r2.dev/attachments/86vz17l8sg0iaq4aq58ks" as const;
+const LOGO_URI = "https://pub-e001eb4506b145aa938b5d3badbff6a5.r2.dev/attachments/1jted3w11djg8r5b9t2fn" as const;
 
 // New palette to match the provided mock
 const DARK_TEAL = "#3f6b71" as const; // main background for body
@@ -69,15 +69,15 @@ const styles = StyleSheet.create({
   logo: {
     width: "70%",
     maxWidth: 360,
-    height: Platform.select({ web: 180, default: 160 }) as number,
-    marginTop: 18,
-    marginBottom: 12,
+    height: Platform.select({ web: 220, default: 200 }) as number,
+    marginTop: 12,
+    marginBottom: 8,
   },
   body: {
     flex: 1,
     backgroundColor: DARK_TEAL,
     alignItems: "center",
-    paddingTop: 12,
+    paddingTop: 16,
   },
   title: {
     marginTop: 6,
@@ -88,7 +88,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   loginBtn: {
-    marginTop: 16,
+    marginTop: 20,
     paddingVertical: 10,
     paddingHorizontal: 36,
     borderRadius: 6,
