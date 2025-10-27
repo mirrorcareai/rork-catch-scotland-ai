@@ -4,6 +4,7 @@ import * as WebBrowser from "expo-web-browser";
 import { router, useFocusEffect } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { ArrowLeft, ExternalLink, RefreshCcw } from "lucide-react-native";
+import WebView from "react-native-webview";
 
 const CHAT_URL = "https://typebot.co/catch-scotland-v2-1-2blwkou" as const;
 const LOGO_URI = "https://pub-e001eb4506b145aa938b5d3badbff6a5.r2.dev/attachments/86vz17l8sg0iaq4aq58ks" as const;
@@ -93,49 +94,40 @@ export default function ChatScreen() {
       );
     }
 
-    try {
-      // Lazy require to avoid web bundling issues if module not polyfilled
-      // eslint-disable-next-line @typescript-eslint/no-var-requires
-      const { WebView } = require("react-native-webview");
-      if (!WebView) throw new Error("WebView module not available");
-
-      return (
-        <WebView
-          key={`wv-${key}`}
-          testID="chat-webview"
-          source={source}
-          startInLoadingState
-          renderLoading={() => (
-            <View style={styles.loader}>
-              <ActivityIndicator size="small" />
-              <Text style={styles.loaderText}>Loading chat…</Text>
-            </View>
-          )}
-          onError={(e: any) => {
-            console.error("[Chat] WebView error", e?.nativeEvent || e);
-            setLoadError("The chat failed to load inside the app.");
-          }}
-          onHttpError={(e: any) => {
-            console.error("[Chat] HTTP error", e?.nativeEvent || e);
-            setLoadError("The chat page returned an error.");
-          }}
-          allowsBackForwardNavigationGestures
-          javaScriptEnabled
-          domStorageEnabled
-          style={styles.webview}
-        />
-      );
-    } catch (e) {
-      console.warn("[Chat] WebView unavailable, falling back", e);
-      return (
-        <View style={styles.fallback}>
-          <Text style={styles.fallbackText}>Chat requires a browser view.</Text>
-          <TouchableOpacity onPress={openExternal} style={styles.openBtn} testID="chat-open-fallback">
-            <Text style={styles.openBtnText}>Open Chat</Text>
-          </TouchableOpacity>
-        </View>
-      );
-    }
+    return (
+      <WebView
+        key={`wv-${key}`}
+        testID="chat-webview"
+        source={source}
+        startInLoadingState
+        renderLoading={() => (
+          <View style={styles.loader}>
+            <ActivityIndicator size="small" />
+            <Text style={styles.loaderText}>Loading chat…</Text>
+          </View>
+        )}
+        onError={(e: any) => {
+          console.error("[Chat] WebView error", e?.nativeEvent || e);
+          setLoadError("The chat failed to load inside the app.");
+        }}
+        onHttpError={(e: any) => {
+          console.error("[Chat] HTTP error", e?.nativeEvent || e);
+          setLoadError("The chat page returned an error.");
+        }}
+        onShouldStartLoadWithRequest={(request) => {
+          console.log("[Chat] Navigation request", request.url);
+          return true;
+        }}
+        allowsBackForwardNavigationGestures
+        javaScriptEnabled
+        domStorageEnabled
+        mediaPlaybackRequiresUserAction={false}
+        allowsInlineMediaPlayback
+        sharedCookiesEnabled
+        thirdPartyCookiesEnabled
+        style={styles.webview}
+      />
+    );
   }, [key, openExternal, source]);
 
   return (
