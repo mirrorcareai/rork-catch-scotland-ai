@@ -80,7 +80,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   title: {
-    marginTop: -60,
+    marginTop: -90,
     fontSize: 24,
     lineHeight: 30,
     fontWeight: "800" as const,
