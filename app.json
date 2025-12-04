@@ -46,7 +46,7 @@
         {
           "icon": "./local/assets/notification_icon.png",
           "color": "#ffffff",
-          "defaultChannel": "default",
+          "defaultChannel": "default"
           ],
           "enableBackgroundRemoteNotifications": false
         }
