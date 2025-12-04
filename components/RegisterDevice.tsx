@@ -208,15 +208,17 @@ export default function RegisterDevice({ phone }: RegisterDeviceProps) {
           <Smartphone color="#0f1f1f" size={18} />
           <Text style={styles.statusLabel}>Status</Text>
         </View>
-        <Text
-          style={[
-            styles.statusMessage,
-            statusType === "success" ? styles.statusSuccess : null,
-            statusType === "error" ? styles.statusError : null,
-          ]}
-        >
-          {statusMessage}
-        </Text>
+        <View style={styles.statusContainer}>
+          <Text
+            style={[
+              styles.statusText,
+              statusType === "success" && { color: "#1f8f4d" },
+              statusType === "error" && { color: "#b3261e" },
+            ]}
+          >
+            {statusType === "idle" ? "Status: Not registered yet." : `Status: ${statusMessage ?? ""}`}
+          </Text>
+        </View>
         {token && (
           <View style={styles.tokenPill} testID="register-token-pill">
             <Text style={styles.tokenLabel}>Expo push token</Text>
@@ -323,16 +325,18 @@ const styles = StyleSheet.create({
     color: "#0f1f1f",
     textTransform: "uppercase",
   },
-  statusMessage: {
-    color: "#1f3535",
+  statusContainer: {
+    borderRadius: 12,
+    backgroundColor: "#fff",
+    padding: 12,
+    borderWidth: 1,
+    borderColor: "#d5ebea",
+  },
+  statusText: {
     fontSize: 15,
     lineHeight: 20,
-  },
-  statusSuccess: {
-    color: "#0b4c3e",
-  },
-  statusError: {
-    color: "#b32727",
+    color: "#1f3535",
+    fontWeight: "600" as const,
   },
   tokenPill: {
     borderRadius: 14,
