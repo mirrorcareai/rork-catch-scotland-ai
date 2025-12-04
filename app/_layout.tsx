@@ -3,6 +3,7 @@ import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import React, { useEffect } from "react";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { useRegisterPushNotifications } from "@/lib/notifications";
 import { trpc, trpcClient } from "@/lib/trpc";
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
@@ -19,6 +20,8 @@ function RootLayoutNav() {
 }
 
 export default function RootLayout() {
+  useRegisterPushNotifications();
+
   useEffect(() => {
     SplashScreen.hideAsync();
   }, []);
