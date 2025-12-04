@@ -203,6 +203,10 @@ export default function RegisterDevice({ phone }: RegisterDeviceProps) {
         </TouchableOpacity>
       </Animated.View>
 
+      <Text style={styles.privacyNote} testID="register-privacy-note">
+        Your number is stored securely and only used for Catch Scotland updates.
+      </Text>
+
       <View style={styles.statusBox} testID="register-status-box">
         <View style={styles.statusHeader}>
           <Smartphone color="#0f1f1f" size={18} />
@@ -313,6 +317,12 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "#c6e3df",
     gap: 10,
+  },
+  privacyNote: {
+    marginTop: 10,
+    fontSize: 12,
+    color: "#FFFFFF",
+    textAlign: "left",
   },
   statusHeader: {
     flexDirection: "row",
