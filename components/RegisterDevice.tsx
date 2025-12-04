@@ -18,16 +18,17 @@ interface RegisterResponse {
 export default function RegisterDevice({ phone }: RegisterDeviceProps) {
   const [phoneInput, setPhoneInput] = useState<string>(phone ?? "");
   const [token, setToken] = useState<string | null>(null);
-  const [status, setStatus] = useState<string>("Ready to register your device");
+  const [statusType, setStatusType] = useState<"idle" | "success" | "error">("idle");
+  const [statusMessage, setStatusMessage] = useState<string>("Ready to register your device");
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [isRequestingToken, setIsRequestingToken] = useState<boolean>(false);
   const [permissionDenied, setPermissionDenied] = useState<boolean>(false);
   const buttonScale = useRef(new Animated.Value(1)).current;
+  const apiBaseUrl = useMemo(() => getApiBaseUrl(), []);
 
-  const { mutateAsync, isPending, isSuccess } = useMutation({
+  const registerMutation = useMutation({
     mutationFn: async ({ phoneNumber, expoToken }: { phoneNumber: string; expoToken: string }) => {
-      const baseUrl = getApiBaseUrl();
-      const response = await fetch(`${baseUrl}/api/push/register`, {
+      const response = await fetch(`${apiBaseUrl}/push/register`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ phone: phoneNumber, token: expoToken }),
@@ -46,7 +47,17 @@ export default function RegisterDevice({ phone }: RegisterDeviceProps) {
 
       return payload;
     },
+    onSuccess: () => {
+      setStatusType("success");
+      setStatusMessage("Device registered for alerts.");
+    },
+    onError: () => {
+      setStatusType("error");
+      setStatusMessage("Registration failed. Please try again.");
+    },
   });
+
+  const { mutateAsync, isPending, isSuccess } = registerMutation;
 
   const shortToken = useMemo(() => {
     if (!token) return null;
@@ -89,8 +100,11 @@ export default function RegisterDevice({ phone }: RegisterDeviceProps) {
     Keyboard.dismiss();
     setErrorMessage(null);
     setPermissionDenied(false);
-    setStatus("Requesting push notification permission…");
+    setStatusType("idle");
+    setStatusMessage("Requesting push notification permission…");
     setIsRequestingToken(true);
+
+    let mutationStarted = false;
 
     try {
       console.log("[RegisterDevice] Requesting push token for", trimmed);
@@ -98,14 +112,16 @@ export default function RegisterDevice({ phone }: RegisterDeviceProps) {
 
       if (!expoToken) {
         setPermissionDenied(true);
+        setStatusType("error");
+        setStatusMessage("Push permissions are required to register this device");
         throw new Error("Push permissions are required to register this device");
       }
 
       setToken(expoToken);
-      setStatus("Registering device with Catch Scotland servers…");
+      setStatusMessage("Registering device with Catch Scotland servers…");
       console.log("[RegisterDevice] Sending token to backend");
+      mutationStarted = true;
       await mutateAsync({ phoneNumber: trimmed, expoToken });
-      setStatus("Device registered successfully. You're all set!");
 
       try {
         await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
@@ -115,7 +131,10 @@ export default function RegisterDevice({ phone }: RegisterDeviceProps) {
     } catch (error: unknown) {
       const message = error instanceof Error ? error.message : "Something went wrong";
       setErrorMessage(message);
-      setStatus("Registration failed. Please try again.");
+      if (!mutationStarted) {
+        setStatusType("error");
+        setStatusMessage(message);
+      }
       console.error("[RegisterDevice] Registration error", error);
       try {
         await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
@@ -189,7 +208,15 @@ export default function RegisterDevice({ phone }: RegisterDeviceProps) {
           <Smartphone color="#0f1f1f" size={18} />
           <Text style={styles.statusLabel}>Status</Text>
         </View>
-        <Text style={styles.statusMessage}>{status}</Text>
+        <Text
+          style={[
+            styles.statusMessage,
+            statusType === "success" ? styles.statusSuccess : null,
+            statusType === "error" ? styles.statusError : null,
+          ]}
+        >
+          {statusMessage}
+        </Text>
         {token && (
           <View style={styles.tokenPill} testID="register-token-pill">
             <Text style={styles.tokenLabel}>Expo push token</Text>
@@ -300,6 +327,12 @@ const styles = StyleSheet.create({
     color: "#1f3535",
     fontSize: 15,
     lineHeight: 20,
+  },
+  statusSuccess: {
+    color: "#0b4c3e",
+  },
+  statusError: {
+    color: "#b32727",
   },
   tokenPill: {
     borderRadius: 14,
