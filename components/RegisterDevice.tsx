@@ -321,7 +321,7 @@ const styles = StyleSheet.create({
   privacyNote: {
     marginTop: 10,
     fontSize: 12,
-    color: "#FFFFFF",
+    color: "#5f6c72",
     textAlign: "left",
   },
   statusHeader: {
