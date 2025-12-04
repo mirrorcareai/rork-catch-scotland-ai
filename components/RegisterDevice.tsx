@@ -220,7 +220,7 @@ export default function RegisterDevice({ phone }: RegisterDeviceProps) {
               statusType === "error" && { color: "#b3261e" },
             ]}
           >
-            {statusType === "idle" ? "Status: Not registered yet." : `Status: ${statusMessage ?? ""}`}
+            {statusType === "idle" ? "Status: Not registered." : `Status: ${statusMessage ?? ""}`}
           </Text>
         </View>
         {token && (
