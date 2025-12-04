@@ -46,6 +46,7 @@ export default function HomeLoginScreen() {
 
       <View style={[styles.body, { paddingBottom: insets.bottom }]}>
         <Text style={styles.title} testID="home-title">Catch Scotland{"\n"}Staff Portal</Text>
+        <Text style={styles.disclaimer}>Your number is stored securely and only used for Catch Scotland updates.</Text>
 
         <Animated.View style={pressStyle}>
           <TouchableOpacity
@@ -97,6 +98,14 @@ const styles = StyleSheet.create({
     fontWeight: "800" as const,
     color: "#ffffff",
     textAlign: "center",
+  },
+  disclaimer: {
+    marginTop: 8,
+    fontSize: 12,
+    color: "#5f6c72",
+    textAlign: "left" as const,
+    width: "80%",
+    alignSelf: "flex-start" as const,
   },
   loginBtn: {
     marginTop: 16,
