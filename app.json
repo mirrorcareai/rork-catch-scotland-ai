@@ -48,7 +48,7 @@
           "color": "#ffffff",
           "defaultChannel": "default",
           "sounds": [
-            "./local/assets/notification_sound.wav"
+            ""
           ],
           "enableBackgroundRemoteNotifications": false
         }
