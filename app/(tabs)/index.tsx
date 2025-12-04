@@ -1,6 +1,7 @@
 import React, { useMemo, useRef } from "react";
 import { Animated, Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { useRouter } from "expo-router";
+import { Shield } from "lucide-react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 // New palette to match the provided mock
@@ -24,6 +25,11 @@ export default function HomeLoginScreen() {
   const goLogin = () => {
     console.log("[Home] Login pressed");
     router.push("/chat");
+  };
+
+  const goRegisterDevice = () => {
+    console.log("[Home] Register Device pressed");
+    router.push("/register-device");
   };
 
   return (
@@ -53,6 +59,11 @@ export default function HomeLoginScreen() {
             <Text style={styles.loginText}>LOGIN</Text>
           </TouchableOpacity>
         </Animated.View>
+
+        <TouchableOpacity style={styles.registerLink} onPress={goRegisterDevice} testID="home-register-device-btn">
+          <Shield color="#cfeae5" size={16} />
+          <Text style={styles.registerLinkText}>Register this device for alerts</Text>
+        </TouchableOpacity>
       </View>
     </View>
   );
@@ -97,4 +108,20 @@ const styles = StyleSheet.create({
     borderColor: "#111",
   },
   loginText: { color: "#111", letterSpacing: 1, fontWeight: "800" as const },
+  registerLink: {
+    marginTop: 20,
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+    paddingVertical: 10,
+    paddingHorizontal: 14,
+    borderRadius: 999,
+    borderWidth: 1,
+    borderColor: "#ffffff33",
+  },
+  registerLinkText: {
+    color: "#f4fffb",
+    fontWeight: "700" as const,
+    letterSpacing: 0.5,
+  },
 });
