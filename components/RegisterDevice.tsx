@@ -166,8 +166,8 @@ export default function RegisterDevice({ phone }: RegisterDeviceProps) {
           testID="register-phone-input"
           value={phoneInput}
           onChangeText={setPhoneInput}
-          placeholder="e.g. +44 7123 456789"
-          placeholderTextColor="#7a8f8f"
+          placeholder="e.g. 07XXXXXXXXX"
+          placeholderTextColor="#9fb7bb"
           keyboardType="phone-pad"
           textContentType="telephoneNumber"
           returnKeyType="done"
