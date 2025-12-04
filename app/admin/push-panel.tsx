@@ -4,6 +4,7 @@ import { Stack } from "expo-router";
 import { LinearGradient } from "expo-linear-gradient";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { BellRing, CheckCircle2, Loader2, RefreshCw, Send, ShieldCheck, Smartphone } from "lucide-react-native";
+import AdminAuth from "@/components/AdminAuth";
 import { getApiBaseUrl } from "@/lib/trpc";
 
 interface PushDevice {
@@ -39,7 +40,9 @@ export default function AdminPushPanelScreen() {
   const [formError, setFormError] = useState<string | null>(null);
   const [statusMessage, setStatusMessage] = useState<string | null>(null);
   const [statusTone, setStatusTone] = useState<"success" | "error" | "info">("info");
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
   const sendButtonScale = useRef(new Animated.Value(1)).current;
+  const apiBaseUrl = useMemo(() => getApiBaseUrl(), []);
 
   const {
     data: devices = [],
@@ -49,6 +52,7 @@ export default function AdminPushPanelScreen() {
   } = useQuery({
     queryKey: ["admin", "devices"],
     queryFn: fetchDevices,
+    enabled: isAuthenticated,
   });
 
   const {
@@ -169,102 +173,115 @@ export default function AdminPushPanelScreen() {
         end={{ x: 1, y: 1 }}
       />
 
-      <ScrollView
-        contentContainerStyle={styles.content}
-        showsVerticalScrollIndicator={false}
-        refreshControl={<RefreshControl refreshing={isRefetching} onRefresh={() => refetch()} tintColor="#8ffff0" />}
-      >
-        <Animated.View style={[styles.panel, { transform: [{ scale: sendButtonScale }] }]} testID="admin-form">
-          <TouchableOpacity
-            activeOpacity={0.95}
-            onPressIn={() => animatePanel(0.985)}
-            onPressOut={() => animatePanel(1)}
-            disabled
-            style={StyleSheet.absoluteFill}
-          />
-          <View style={styles.panelHeader}>
-            <ShieldCheck color="#0c2223" size={28} />
-            <View>
-              <Text style={styles.panelTitle}>Compose notification</Text>
-              <Text style={styles.panelSubtitle}>Write a title & message, then send a quick test.</Text>
-            </View>
-          </View>
-
-          <View style={styles.inputGroup}>
-            <Text style={styles.label}>Notification title</Text>
-            <TextInput
-              value={title}
-              onChangeText={setTitle}
-              placeholder="Wellbeing Reminder"
-              placeholderTextColor="#5b6b6b"
-              style={styles.input}
-              testID="admin-title-input"
+      {isAuthenticated ? (
+        <ScrollView
+          contentContainerStyle={styles.content}
+          showsVerticalScrollIndicator={false}
+          refreshControl={<RefreshControl refreshing={isRefetching} onRefresh={() => refetch()} tintColor="#8ffff0" />}
+        >
+          <Animated.View style={[styles.panel, { transform: [{ scale: sendButtonScale }] }]} testID="admin-form">
+            <TouchableOpacity
+              activeOpacity={0.95}
+              onPressIn={() => animatePanel(0.985)}
+              onPressOut={() => animatePanel(1)}
+              disabled
+              style={StyleSheet.absoluteFill}
             />
+            <View style={styles.panelHeader}>
+              <ShieldCheck color="#0c2223" size={28} />
+              <View>
+                <Text style={styles.panelTitle}>Compose notification</Text>
+                <Text style={styles.panelSubtitle}>Write a title & message, then send a quick test.</Text>
+              </View>
+            </View>
+
+            <View style={styles.inputGroup}>
+              <Text style={styles.label}>Notification title</Text>
+              <TextInput
+                value={title}
+                onChangeText={setTitle}
+                placeholder="Wellbeing Reminder"
+                placeholderTextColor="#5b6b6b"
+                style={styles.input}
+                testID="admin-title-input"
+              />
+            </View>
+
+            <View style={styles.inputGroup}>
+              <Text style={styles.label}>Message body</Text>
+              <TextInput
+                value={message}
+                onChangeText={setMessage}
+                placeholder="Don't forget to check in before your shift"
+                placeholderTextColor="#5b6b6b"
+                style={[styles.input, styles.textarea]}
+                multiline
+                numberOfLines={4}
+                textAlignVertical="top"
+                testID="admin-message-input"
+              />
+            </View>
+
+            {formError && (
+              <View style={[styles.statusStrip, styles.statusError]} testID="admin-form-error">
+                <BellRing color="#3b0c0c" size={16} />
+                <Text style={styles.statusText}>{formError}</Text>
+              </View>
+            )}
+
+            {statusMessage && (
+              <View
+                style={[
+                  styles.statusStrip,
+                  statusTone === "success" ? styles.statusSuccess : statusTone === "error" ? styles.statusError : styles.statusInfo,
+                ]}
+                testID="admin-status"
+              >
+                {statusTone === "success" ? <CheckCircle2 color="#0e2a0f" size={16} /> : statusTone === "error" ? <BellRing color="#3b0c0c" size={16} /> : <Loader2 color="#0c2333" size={16} />}
+                <Text style={styles.statusText}>{statusMessage}</Text>
+              </View>
+            )}
+          </Animated.View>
+
+          <View style={styles.devicesSection} testID="admin-device-section">
+            <View style={styles.devicesHeader}>
+              <Text style={styles.devicesTitle}>Registered devices</Text>
+              <TouchableOpacity style={styles.refreshBtn} onPress={() => refetch()} testID="admin-refresh-btn">
+                <RefreshCw color="#031112" size={16} />
+                <Text style={styles.refreshText}>Refresh</Text>
+              </TouchableOpacity>
+            </View>
+            {lastUpdated && <Text style={styles.timestamp}>Updated {lastUpdated}</Text>}
+
+            {isLoading && (
+              <View style={styles.loaderRow} testID="admin-device-loading">
+                <ActivityIndicator color="#9fe7da" />
+                <Text style={styles.loaderText}>Loading devices…</Text>
+              </View>
+            )}
+
+            {!isLoading && devices.length === 0 && (
+              <View style={styles.emptyState} testID="admin-empty">
+                <Text style={styles.emptyTitle}>No devices registered yet</Text>
+                <Text style={styles.emptyBody}>Ask teammates to register their device from the home screen.</Text>
+              </View>
+            )}
+
+            {devices.map(renderDevice)}
           </View>
-
-          <View style={styles.inputGroup}>
-            <Text style={styles.label}>Message body</Text>
-            <TextInput
-              value={message}
-              onChangeText={setMessage}
-              placeholder="Don't forget to check in before your shift"
-              placeholderTextColor="#5b6b6b"
-              style={[styles.input, styles.textarea]}
-              multiline
-              numberOfLines={4}
-              textAlignVertical="top"
-              testID="admin-message-input"
-            />
+        </ScrollView>
+      ) : (
+        <View style={styles.authGate} testID="admin-auth-gate">
+          <View style={styles.authCopy}>
+            <Text style={styles.authKicker}>Secure admin console</Text>
+            <Text style={styles.authHeadline}>Verify your identity</Text>
+            <Text style={styles.authBody}>
+              Enter the admin phone number to receive a one-time PIN, then unlock push controls for registered devices.
+            </Text>
           </View>
-
-          {formError && (
-            <View style={[styles.statusStrip, styles.statusError]} testID="admin-form-error">
-              <BellRing color="#3b0c0c" size={16} />
-              <Text style={styles.statusText}>{formError}</Text>
-            </View>
-          )}
-
-          {statusMessage && (
-            <View
-              style={[
-                styles.statusStrip,
-                statusTone === "success" ? styles.statusSuccess : statusTone === "error" ? styles.statusError : styles.statusInfo,
-              ]}
-              testID="admin-status"
-            >
-              {statusTone === "success" ? <CheckCircle2 color="#0e2a0f" size={16} /> : statusTone === "error" ? <BellRing color="#3b0c0c" size={16} /> : <Loader2 color="#0c2333" size={16} />}
-              <Text style={styles.statusText}>{statusMessage}</Text>
-            </View>
-          )}
-        </Animated.View>
-
-        <View style={styles.devicesSection} testID="admin-device-section">
-          <View style={styles.devicesHeader}>
-            <Text style={styles.devicesTitle}>Registered devices</Text>
-            <TouchableOpacity style={styles.refreshBtn} onPress={() => refetch()} testID="admin-refresh-btn">
-              <RefreshCw color="#031112" size={16} />
-              <Text style={styles.refreshText}>Refresh</Text>
-            </TouchableOpacity>
-          </View>
-          {lastUpdated && <Text style={styles.timestamp}>Updated {lastUpdated}</Text>}
-
-          {isLoading && (
-            <View style={styles.loaderRow} testID="admin-device-loading">
-              <ActivityIndicator color="#9fe7da" />
-              <Text style={styles.loaderText}>Loading devices…</Text>
-            </View>
-          )}
-
-          {!isLoading && devices.length === 0 && (
-            <View style={styles.emptyState} testID="admin-empty">
-              <Text style={styles.emptyTitle}>No devices registered yet</Text>
-              <Text style={styles.emptyBody}>Ask teammates to register their device from the home screen.</Text>
-            </View>
-          )}
-
-          {devices.map(renderDevice)}
+          <AdminAuth apiBaseUrl={apiBaseUrl} onAuthenticated={() => setIsAuthenticated(true)} />
         </View>
-      </ScrollView>
+      )}
     </View>
   );
 }
@@ -356,6 +373,32 @@ const styles = StyleSheet.create({
     gap: 16,
     borderWidth: 1,
     borderColor: "#0e3c3d",
+  },
+  authGate: {
+    flex: 1,
+    padding: 24,
+    justifyContent: "center",
+    gap: 24,
+  },
+  authCopy: {
+    gap: 8,
+  },
+  authKicker: {
+    color: "#84f4df",
+    fontSize: 13,
+    letterSpacing: 1,
+    textTransform: "uppercase",
+    fontWeight: "700",
+  },
+  authHeadline: {
+    fontSize: 32,
+    fontWeight: "800",
+    color: "#f4fffd",
+  },
+  authBody: {
+    color: "#c3e6e0",
+    fontSize: 15,
+    lineHeight: 22,
   },
   devicesHeader: {
     flexDirection: "row",
