@@ -328,15 +328,15 @@ const styles = StyleSheet.create({
   statusContainer: {
     borderRadius: 12,
     backgroundColor: "#fff",
-    padding: 12,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
     borderWidth: 1,
     borderColor: "#d5ebea",
+    marginTop: 12,
   },
   statusText: {
-    fontSize: 15,
-    lineHeight: 20,
-    color: "#1f3535",
-    fontWeight: "600" as const,
+    fontSize: 12,
+    color: "#5f6c72",
   },
   tokenPill: {
     borderRadius: 14,
