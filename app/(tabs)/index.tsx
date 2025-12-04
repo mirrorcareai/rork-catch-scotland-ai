@@ -64,6 +64,14 @@ export default function HomeLoginScreen() {
           <Shield color="#cfeae5" size={16} />
           <Text style={styles.registerLinkText}>Register this device for alerts</Text>
         </TouchableOpacity>
+
+        <View style={styles.accessCard} testID="home-access-card">
+          <Text style={styles.accessTitle}>Need to grant write access?</Text>
+          <Text style={styles.accessStep}>1. Open the repo on GitHub with an admin account.</Text>
+          <Text style={styles.accessStep}>2. Go to Settings → Collaborators & teams → Manage access.</Text>
+          <Text style={styles.accessStep}>3. Invite the user and choose at least Write permissions.</Text>
+          <Text style={styles.accessStep}>4. Ask them to accept the invite email.</Text>
+        </View>
       </View>
     </View>
   );
@@ -123,5 +131,27 @@ const styles = StyleSheet.create({
     color: "#f4fffb",
     fontWeight: "700" as const,
     letterSpacing: 0.5,
+  },
+  accessCard: {
+    marginTop: 24,
+    width: "90%",
+    backgroundColor: "#274348",
+    borderRadius: 18,
+    paddingVertical: 18,
+    paddingHorizontal: 20,
+    gap: 6,
+    borderWidth: 1,
+    borderColor: "#5c7f86",
+  },
+  accessTitle: {
+    color: "#e8f6f4",
+    fontSize: 14,
+    fontWeight: "700" as const,
+    letterSpacing: 0.6,
+  },
+  accessStep: {
+    color: "#c5d9d6",
+    fontSize: 13,
+    lineHeight: 18,
   },
 });
