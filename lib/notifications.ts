@@ -1,31 +1,7 @@
-import { useEffect } from "react";
 import { Platform } from "react-native";
 import * as Notifications from "expo-notifications";
 import * as Device from "expo-device";
 import Constants from "expo-constants";
-
-export function useRegisterPushNotifications() {
-  useEffect(() => {
-    console.log("[Notifications] useRegisterPushNotifications mounted");
-    let isActive = true;
-
-    (async () => {
-      const token = await registerForPushNotifications();
-      if (!isActive) return;
-
-      if (token) {
-        console.log("[Notifications] Ready to sync push token with backend", token);
-      } else {
-        console.log("[Notifications] No push token available after registration attempt");
-      }
-    })();
-
-    return () => {
-      isActive = false;
-      console.log("[Notifications] useRegisterPushNotifications unmounted");
-    };
-  }, []);
-}
 
 export async function registerForPushNotifications(): Promise<string | null> {
   try {

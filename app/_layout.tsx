@@ -3,7 +3,7 @@ import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import React, { useEffect } from "react";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import { useRegisterPushNotifications } from "@/lib/notifications";
+import { registerForPushNotifications } from "@/lib/notifications";
 import { trpc, trpcClient } from "@/lib/trpc";
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
@@ -20,7 +20,22 @@ function RootLayoutNav() {
 }
 
 export default function RootLayout() {
-  useRegisterPushNotifications();
+  useEffect(() => {
+    let isMounted = true;
+
+    registerForPushNotifications().then((token) => {
+      if (!isMounted) return;
+      if (token) {
+        console.log("[RootLayout] Push token registered", token);
+      } else {
+        console.log("[RootLayout] Push registration did not return a token");
+      }
+    });
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   useEffect(() => {
     SplashScreen.hideAsync();
