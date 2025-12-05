@@ -1,15 +1,17 @@
 import * as Notifications from 'expo-notifications';
 import * as Device from 'expo-device';
 import Constants from 'expo-constants';
-import { useEffect } from 'react';
 
-export async function registerForPushNotifications() {
-  try {
-    // 1. Only real devices can get push tokens
-    if (!Device.isDevice) {
-      console.log('[Notifications] Skipping push registration: not running on a physical device.');
-      return null;
-    }
+export function useRegisterPushNotifications() {
+  useEffect(() => {
+    (async () => {
+      const token = await registerForPushNotifications();
+      if (!token) return; // nothing to register yet
+
+      // … send token + phone to your backend, etc.
+    })();
+  }, []);
+}
 
     // 2. Ask for permissions
     const { status: existingStatus } = await Notifications.getPermissionsAsync();
@@ -48,15 +50,5 @@ export async function registerForPushNotifications() {
     console.warn('[Notifications] Failed to register push notifications:', error);
     return null;
   }
-}
-
-export function useRegisterPushNotifications() {
-  useEffect(() => {
-    const register = async () => {
-      await registerForPushNotifications();
-    };
-
-    register();
-  }, []);
 }
 
