@@ -1,6 +1,7 @@
 import * as Notifications from 'expo-notifications';
 import * as Device from 'expo-device';
 import Constants from 'expo-constants';
+import { useEffect } from 'react';
 
 export async function registerForPushNotifications() {
   try {
@@ -47,5 +48,15 @@ export async function registerForPushNotifications() {
     console.warn('[Notifications] Failed to register push notifications:', error);
     return null;
   }
+}
+
+export function useRegisterPushNotifications() {
+  useEffect(() => {
+    const register = async () => {
+      await registerForPushNotifications();
+    };
+
+    register();
+  }, []);
 }
 
