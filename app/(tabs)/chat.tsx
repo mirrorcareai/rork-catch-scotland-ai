@@ -128,7 +128,7 @@ export default function ChatScreen() {
         style={styles.webview}
       />
     );
-  }, [key, openExternal, source]);
+  }, [key, source]);
 
   return (
     <View style={styles.container}>

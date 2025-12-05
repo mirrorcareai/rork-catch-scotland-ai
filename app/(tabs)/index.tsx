@@ -8,6 +8,11 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 const DARK_TEAL = "#3f6b71" as const; // main background for body
 const MINT = "#cfeae5" as const; // button background
 
+const NAVIGABLE_PATHS = {
+  chat: "/(tabs)/chat" as const,
+  registerDevice: "/register-device" as const,
+};
+
 export default function HomeLoginScreen() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
@@ -22,14 +27,18 @@ export default function HomeLoginScreen() {
 
   const pressStyle = useMemo(() => [{ transform: [{ scale }] }], [scale]);
 
+  const pushRoute = (path: keyof typeof NAVIGABLE_PATHS) => {
+    router.push(NAVIGABLE_PATHS[path] as never);
+  };
+
   const goLogin = () => {
     console.log("[Home] Login pressed");
-    router.push("/chat");
+    pushRoute("chat");
   };
 
   const goRegisterDevice = () => {
     console.log("[Home] Register Device pressed");
-    router.push("/register-device");
+    pushRoute("registerDevice");
   };
 
   return (
