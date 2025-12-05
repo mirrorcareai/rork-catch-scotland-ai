@@ -1,54 +1,79 @@
-import * as Notifications from 'expo-notifications';
-import * as Device from 'expo-device';
-import Constants from 'expo-constants';
+import { useEffect } from "react";
+import { Platform } from "react-native";
+import * as Notifications from "expo-notifications";
+import * as Device from "expo-device";
+import Constants from "expo-constants";
 
 export function useRegisterPushNotifications() {
   useEffect(() => {
+    console.log("[Notifications] useRegisterPushNotifications mounted");
+    let isActive = true;
+
     (async () => {
       const token = await registerForPushNotifications();
-      if (!token) return; // nothing to register yet
+      if (!isActive) return;
 
-      // … send token + phone to your backend, etc.
+      if (token) {
+        console.log("[Notifications] Ready to sync push token with backend", token);
+      } else {
+        console.log("[Notifications] No push token available after registration attempt");
+      }
     })();
+
+    return () => {
+      isActive = false;
+      console.log("[Notifications] useRegisterPushNotifications unmounted");
+    };
   }, []);
 }
 
-    // 2. Ask for permissions
-    const { status: existingStatus } = await Notifications.getPermissionsAsync();
-    let finalStatus = existingStatus;
+export async function registerForPushNotifications(): Promise<string | null> {
+  try {
+    console.log("[Notifications] Starting push registration flow");
 
-    if (existingStatus !== 'granted') {
-      const { status } = await Notifications.requestPermissionsAsync();
-      finalStatus = status;
-    }
-
-    if (finalStatus !== 'granted') {
-      console.log('[Notifications] Push permission not granted, skipping token registration.');
+    if (!Device.isDevice) {
+      console.warn("[Notifications] Push notifications require a physical device");
       return null;
     }
 
-    // 3. Resolve the Expo projectId
+    const { status: existingStatus } = await Notifications.getPermissionsAsync();
+    let finalStatus = existingStatus;
+    console.log("[Notifications] Existing permission status", existingStatus);
+
+    if (existingStatus !== "granted") {
+      const { status } = await Notifications.requestPermissionsAsync();
+      finalStatus = status;
+      console.log("[Notifications] Requested permission status", status);
+    }
+
+    if (finalStatus !== "granted") {
+      console.warn("[Notifications] Push permission not granted, aborting registration");
+      return null;
+    }
+
+    if (Platform.OS === "android") {
+      await Notifications.setNotificationChannelAsync("default", {
+        name: "Default",
+        importance: Notifications.AndroidImportance.MAX,
+      });
+      console.log("[Notifications] Android notification channel configured");
+    }
+
     const projectId =
       Constants?.expoConfig?.extra?.eas?.projectId ??
       Constants?.easConfig?.projectId ??
       null;
 
     if (!projectId) {
-      console.warn(
-        '[Notifications] Missing projectId in Constants. Skipping getExpoPushTokenAsync to avoid crash.'
-      );
+      console.warn("[Notifications] Missing projectId in Constants. Skipping token fetch to avoid crash.");
       return null;
     }
 
-    // 4. Get the Expo push token with projectId
     const token = await Notifications.getExpoPushTokenAsync({ projectId });
-
-    console.log('[Notifications] Registered Expo push token:', token.data);
+    console.log("[Notifications] Received Expo push token", token.data);
     return token.data;
   } catch (error) {
-    // Use warn/log so Expo Go doesn’t treat it as a fatal error
-    console.warn('[Notifications] Failed to register push notifications:', error);
+    console.warn("[Notifications] Failed to register push notifications", error);
     return null;
   }
 }
-
