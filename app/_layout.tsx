@@ -3,6 +3,7 @@ import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import React, { useEffect } from "react";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { StyleSheet } from "react-native";
 import { registerForPushNotifications } from "@/lib/notifications";
 import { trpc, trpcClient } from "@/lib/trpc";
 
@@ -44,10 +45,17 @@ export default function RootLayout() {
   return (
     <trpc.Provider client={trpcClient} queryClient={queryClient}>
       <QueryClientProvider client={queryClient}>
-        <GestureHandlerRootView>
+        <GestureHandlerRootView style={styles.root}>
           <RootLayoutNav />
         </GestureHandlerRootView>
       </QueryClientProvider>
     </trpc.Provider>
   );
 }
+
+const styles = StyleSheet.create({
+  root: {
+    flex: 1,
+    backgroundColor: "#05060A",
+  },
+});
