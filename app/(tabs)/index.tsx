@@ -1,5 +1,5 @@
 import React, { useMemo, useRef } from "react";
-import { Alert, Animated, Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Animated, Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { useRouter } from "expo-router";
 import { Shield } from "lucide-react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -30,11 +30,6 @@ export default function HomeLoginScreen() {
   const goRegisterDevice = () => {
     console.log("[Home] Register Device pressed");
     router.push("/register-device");
-  };
-
-  const openWriteAccessGuide = () => {
-    console.log("[Home] Write access helper opened");
-    Alert.alert("Grant write access", "Contact your Catch Scotland admin to enable write permissions. Share your device ID when requested.");
   };
 
   return (
@@ -69,14 +64,6 @@ export default function HomeLoginScreen() {
           <Shield color="#cfeae5" size={16} />
           <Text style={styles.registerLinkText}>Register this device for alerts</Text>
         </TouchableOpacity>
-
-        <View style={styles.writeAccessCard} testID="write-access-card">
-          <Text style={styles.accessTitle}>Need write access?</Text>
-          <Text style={styles.accessCopy}>Only verified operations managers can publish updates. Tap below for guidance.</Text>
-          <TouchableOpacity style={styles.accessBtn} onPress={openWriteAccessGuide} testID="write-access-btn" activeOpacity={0.85}>
-            <Text style={styles.accessBtnText}>How to request</Text>
-          </TouchableOpacity>
-        </View>
 
       </View>
     </View>
@@ -136,40 +123,6 @@ const styles = StyleSheet.create({
   registerLinkText: {
     color: "#f4fffb",
     fontWeight: "700" as const,
-    letterSpacing: 0.5,
-  },
-  writeAccessCard: {
-    marginTop: 28,
-    width: "90%",
-    backgroundColor: "#26494d",
-    borderRadius: 18,
-    padding: 20,
-    gap: 10,
-    borderWidth: 1,
-    borderColor: "#5fa6aa",
-  },
-  accessTitle: {
-    color: "#e9fffb",
-    fontSize: 16,
-    fontWeight: "800" as const,
-    letterSpacing: 0.4,
-  },
-  accessCopy: {
-    color: "#c1dede",
-    fontSize: 13,
-    lineHeight: 18,
-  },
-  accessBtn: {
-    alignSelf: "flex-start",
-    marginTop: 6,
-    backgroundColor: "#cfeae5",
-    borderRadius: 999,
-    paddingVertical: 8,
-    paddingHorizontal: 18,
-  },
-  accessBtnText: {
-    color: "#0c2a31",
-    fontWeight: "800" as const,
     letterSpacing: 0.5,
   },
 });
