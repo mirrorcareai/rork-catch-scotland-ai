@@ -1,22 +1,38 @@
-import { Slot } from "expo-router";
-import { SafeAreaProvider } from "react-native-safe-area-context";
-import { StyleSheet, View } from "react-native";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { Stack } from "expo-router";
+import * as SplashScreen from "expo-splash-screen";
+import React, { useEffect } from "react";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { useRegisterPushNotifications } from "@/lib/notifications";
+import { trpc, trpcClient } from "@/lib/trpc";
 
-const CANVAS = "#abd9d6" as const;
+// Prevent the splash screen from auto-hiding before asset loading is complete.
+SplashScreen.preventAutoHideAsync();
 
-export default function RootLayout() {
+const queryClient = new QueryClient();
+
+function RootLayoutNav() {
   return (
-    <SafeAreaProvider>
-      <View style={styles.canvas}>
-        <Slot />
-      </View>
-    </SafeAreaProvider>
+    <Stack screenOptions={{ headerBackTitle: "Back" }}>
+      <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+    </Stack>
   );
 }
 
-const styles = StyleSheet.create({
-  canvas: {
-    flex: 1,
-    backgroundColor: CANVAS,
-  },
-});
+export default function RootLayout() {
+  useRegisterPushNotifications();
+
+  useEffect(() => {
+    SplashScreen.hideAsync();
+  }, []);
+
+  return (
+    <trpc.Provider client={trpcClient} queryClient={queryClient}>
+      <QueryClientProvider client={queryClient}>
+        <GestureHandlerRootView>
+          <RootLayoutNav />
+        </GestureHandlerRootView>
+      </QueryClientProvider>
+    </trpc.Provider>
+  );
+}
