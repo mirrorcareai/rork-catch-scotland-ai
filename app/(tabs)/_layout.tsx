@@ -1,22 +1,25 @@
-import { Slot } from "expo-router";
-import { SafeAreaProvider } from "react-native-safe-area-context";
-import { StyleSheet, View } from "react-native";
+import { Tabs } from "expo-router";
+import React from "react";
 
-const CANVAS = "#abd9d6" as const;
+import Colors from "@/constants/colors";
 
-export default function RootLayout() {
+export default function TabLayout() {
   return (
-    <SafeAreaProvider>
-      <View style={styles.canvas}>
-        <Slot />
-      </View>
-    </SafeAreaProvider>
+    <Tabs
+      screenOptions={{
+        tabBarActiveTintColor: Colors.light.tint,
+        headerShown: false,
+        tabBarStyle: { display: "none" },
+      }}
+    >
+      <Tabs.Screen
+        name="index"
+        options={{
+          title: "Home",
+          // No icon to keep the bar visually hidden across platforms
+        }}
+      />
+      {/* chat route remains accessible but is not a tab */}
+    </Tabs>
   );
 }
-
-const styles = StyleSheet.create({
-  canvas: {
-    flex: 1,
-    backgroundColor: CANVAS,
-  },
-});
