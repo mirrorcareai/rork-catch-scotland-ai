@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useRef, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { ActivityIndicator, Alert, Animated, Platform, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { KeyRound, PhoneCall } from "lucide-react-native";
 
@@ -21,6 +21,37 @@ export default function AdminAuth({ onAuthenticated, apiBaseUrl }: AdminAuthProp
   const [loading, setLoading] = useState<boolean>(false);
   const [statusMessage, setStatusMessage] = useState<string>("Enter your admin phone number to receive a secure PIN");
   const buttonScale = useRef(new Animated.Value(1)).current;
+  const isMountedRef = useRef<boolean>(true);
+
+  useEffect(() => {
+    return () => {
+      isMountedRef.current = false;
+    };
+  }, []);
+
+  const safeSetLoading = useCallback((value: boolean) => {
+    if (!isMountedRef.current) {
+      console.log("[AdminAuth] Skipping setLoading, component unmounted");
+      return;
+    }
+    setLoading(value);
+  }, [setLoading]);
+
+  const safeSetStatusMessage = useCallback((value: string) => {
+    if (!isMountedRef.current) {
+      console.log("[AdminAuth] Skipping setStatusMessage, component unmounted");
+      return;
+    }
+    setStatusMessage(value);
+  }, [setStatusMessage]);
+
+  const safeSetStage = useCallback((value: Stage) => {
+    if (!isMountedRef.current) {
+      console.log("[AdminAuth] Skipping setStage, component unmounted");
+      return;
+    }
+    setStage(value);
+  }, [setStage]);
 
   const ensureApiBaseUrl = useCallback(() => {
     if (!apiBaseUrl) {
@@ -62,8 +93,8 @@ export default function AdminAuth({ onAuthenticated, apiBaseUrl }: AdminAuthProp
     }
 
     console.log("[AdminAuth] Requesting PIN for", trimmed);
-    setLoading(true);
-    setStatusMessage("Sending secure PIN to your device…");
+    safeSetLoading(true);
+    safeSetStatusMessage("Sending secure PIN to your device…");
 
     try {
       const res = await fetch(`${apiBaseUrl}/admin/request-pin`, {
@@ -73,21 +104,21 @@ export default function AdminAuth({ onAuthenticated, apiBaseUrl }: AdminAuthProp
       });
       const data = await parseResponse(res);
       if (res.ok && data.success) {
-        setStage("verify");
-        setStatusMessage("PIN sent. Please check your messages and enter the code below.");
+        safeSetStage("verify");
+        safeSetStatusMessage("PIN sent. Please check your messages and enter the code below.");
       } else {
         console.warn("[AdminAuth] request-pin failed", data);
         Alert.alert("Error", data.message ?? "Unable to send PIN.");
-        setStatusMessage("Failed to send PIN. Please double-check your phone number and try again.");
+        safeSetStatusMessage("Failed to send PIN. Please double-check your phone number and try again.");
       }
     } catch (error) {
       console.error("[AdminAuth] request-pin network error", error);
       Alert.alert("Error", "Something went wrong while requesting the PIN.");
-      setStatusMessage("Network error. Please try again in a moment.");
+      safeSetStatusMessage("Network error. Please try again in a moment.");
     } finally {
-      setLoading(false);
+      safeSetLoading(false);
     }
-  }, [apiBaseUrl, ensureApiBaseUrl, parseResponse, phone]);
+  }, [apiBaseUrl, ensureApiBaseUrl, parseResponse, phone, safeSetLoading, safeSetStage, safeSetStatusMessage]);
 
   const handleVerifyPin = useCallback(async () => {
     if (!ensureApiBaseUrl()) return;
@@ -99,8 +130,8 @@ export default function AdminAuth({ onAuthenticated, apiBaseUrl }: AdminAuthProp
     }
 
     console.log("[AdminAuth] Verifying PIN for", trimmedPhone);
-    setLoading(true);
-    setStatusMessage("Verifying credentials…");
+    safeSetLoading(true);
+    safeSetStatusMessage("Verifying credentials…");
 
     try {
       const res = await fetch(`${apiBaseUrl}/admin/verify-pin`, {
@@ -111,21 +142,21 @@ export default function AdminAuth({ onAuthenticated, apiBaseUrl }: AdminAuthProp
       const data = await parseResponse(res);
       if (res.ok && data.success) {
         console.log("[AdminAuth] PIN verified successfully");
-        setStatusMessage("Authenticated! Loading admin tools…");
+        safeSetStatusMessage("Authenticated! Loading admin tools…");
         onAuthenticated();
       } else {
         console.warn("[AdminAuth] verify-pin failed", data);
         Alert.alert("Error", data.message ?? "PIN verification failed.");
-        setStatusMessage("PIN verification failed. Please try again.");
+        safeSetStatusMessage("PIN verification failed. Please try again.");
       }
     } catch (error) {
       console.error("[AdminAuth] verify-pin network error", error);
       Alert.alert("Error", "Something went wrong while verifying the PIN.");
-      setStatusMessage("Network error. Please try again in a moment.");
+      safeSetStatusMessage("Network error. Please try again in a moment.");
     } finally {
-      setLoading(false);
+      safeSetLoading(false);
     }
-  }, [apiBaseUrl, ensureApiBaseUrl, onAuthenticated, parseResponse, phone, pin]);
+  }, [apiBaseUrl, ensureApiBaseUrl, onAuthenticated, parseResponse, phone, pin, safeSetLoading, safeSetStatusMessage]);
 
   const buttonLabel = useMemo(() => {
     if (loading) {
