@@ -1,4 +1,3 @@
-// app/_layout.tsx
 import React, { useEffect } from "react";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { Stack } from "expo-router";
