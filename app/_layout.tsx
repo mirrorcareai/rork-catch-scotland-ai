@@ -1,9 +1,9 @@
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { Stack } from "expo-router";
-import * as SplashScreen from "expo-splash-screen";
+// app/_layout.tsx
 import React, { useEffect } from "react";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import { useRegisterPushNotifications } from "@/lib/notifications";
+import { Stack } from "expo-router";
+import * as SplashScreen from "expo-splash-screen";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { trpc, trpcClient } from "@/lib/trpc";
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
@@ -20,8 +20,6 @@ function RootLayoutNav() {
 }
 
 export default function RootLayout() {
-  useRegisterPushNotifications();
-
   useEffect(() => {
     SplashScreen.hideAsync();
   }, []);
@@ -29,10 +27,11 @@ export default function RootLayout() {
   return (
     <trpc.Provider client={trpcClient} queryClient={queryClient}>
       <QueryClientProvider client={queryClient}>
-        <GestureHandlerRootView>
+        <GestureHandlerRootView style={{ flex: 1 }}>
           <RootLayoutNav />
         </GestureHandlerRootView>
       </QueryClientProvider>
     </trpc.Provider>
   );
 }
+
